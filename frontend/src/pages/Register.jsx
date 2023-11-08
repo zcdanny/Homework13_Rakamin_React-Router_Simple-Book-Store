@@ -9,12 +9,14 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { registerUser } from "../modules/fetch";
 import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isPasswordVisible, setPasswordVisibility] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const toast = useToast();
@@ -25,11 +27,7 @@ const Register = () => {
       return;
     }
     try {
-      await registerUser(
-        e.target.name.value,
-        e.target.email.value,
-        password
-      );
+      await registerUser(e.target.name.value, e.target.email.value, password);
       toast({
         title: "Registered",
         description: "You have successfully registered.",
@@ -49,6 +47,10 @@ const Register = () => {
       });
     }
     setError(error?.message || "An error occurred");
+  };
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisibility(!isPasswordVisible);
   };
 
   return (
@@ -82,21 +84,27 @@ const Register = () => {
           <FormControl isRequired mt={4}>
             <FormLabel>Password</FormLabel>
             <Input
-              type="password"
+              type={isPasswordVisible ? "text" : "password"}
               placeholder="Enter a password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <Button onClick={togglePasswordVisibility}>
+              {isPasswordVisible ? <ViewIcon /> : <ViewOffIcon />}
+            </Button>
           </FormControl>
 
           <FormControl isRequired mt={4}>
             <FormLabel>Confirm Password</FormLabel>
             <Input
-              type="password"
+              type={isPasswordVisible ? "text" : "password"}
               placeholder="Confirm your password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
+            <Button onClick={togglePasswordVisibility}>
+              {isPasswordVisible ? <ViewIcon /> : <ViewOffIcon />}
+            </Button>
             {password !== confirmPassword && (
               <Text fontSize="xs" color="red.500">
                 The password does not match

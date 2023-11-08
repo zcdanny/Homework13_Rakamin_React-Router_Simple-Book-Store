@@ -16,6 +16,9 @@ import {
   useDisclosure,
   useToast,
   VStack,
+  useColorModeValue,
+  SkeletonCircle,
+  SkeletonText,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -26,6 +29,8 @@ const Navbar = () => {
   const [isLogin, setIsLogin] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
+  const textColor = useColorModeValue("gray.100");
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = window.localStorage.getItem("token");
@@ -42,14 +47,13 @@ const Navbar = () => {
       justify="space-between"
       wrap="wrap"
       padding="1rem"
-      bg="teal.500"
-      color="white"
-    >
+      bg={textColor}>
       <Link to="/">
         <Flex align="center" mr={5} cursor="pointer">
-          <Text fontSize="xl" fontWeight="bold">
-            My Website
-          </Text>
+          <img
+            src="	https://ecs7.tokopedia.net/assets-tokopedia-lite/v2/zeus/production/e5b8438b.svg"
+            alt="Tokopedia"
+          />
         </Flex>
       </Link>
       <HStack>
@@ -59,7 +63,7 @@ const Navbar = () => {
           </Link>
         )}
         {!isLogin ? (
-          <Button onClick={onOpen} colorScheme="blue">
+          <Button onClick={onOpen} colorScheme="green">
             Login
           </Button>
         ) : (
@@ -68,9 +72,8 @@ const Navbar = () => {
             onClick={() => {
               window.localStorage.removeItem("token");
               setIsLogin(false);
-              navigate("/")
-            }}
-          >
+              navigate("/");
+            }}>
             Logout
           </Button>
         )}
@@ -98,8 +101,7 @@ const Navbar = () => {
                 isClosable: true,
               });
             }
-          }}
-        >
+          }}>
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>Login</ModalHeader>
@@ -125,9 +127,26 @@ const Navbar = () => {
               </VStack>
             </ModalBody>
             <ModalFooter>
-              <Button type="submit" form="login-form" colorScheme="blue" mr={3}>
-                Login
-              </Button>
+              {isLoading ? (
+                <Button
+                  type="submit"
+                  form="login-form"
+                  colorScheme="blue"
+                  mr={3}>
+                  Login
+                </Button>
+              ) : (
+                <Box padding="6" boxShadow="lg" bg="white">
+                  <SkeletonCircle size="10" />
+                  <SkeletonText
+                    mt="4"
+                    noOfLines={4}
+                    spacing="4"
+                    skeletonHeight="2"
+                  />
+                </Box>
+              )}
+
               <Link to="/register" onClick={onClose}>
                 <Button variant="ghost">
                   Doesn't Have Account? Click here

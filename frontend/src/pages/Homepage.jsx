@@ -1,9 +1,7 @@
-import { VStack } from "@chakra-ui/react";
+import { VStack, Grid, GridItem } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import Books from "../components/Books";
 import { getAllBooks } from "../modules/fetch";
- 
-
 
 export default function Homepage() {
   const [books, setBooks] = useState([]);
@@ -16,10 +14,10 @@ export default function Homepage() {
   }, []);
 
   return (
-    <VStack w="100vw">
+    <Grid templateColumns="repeat(4, 1fr)" gap={6}>
       {books?.books?.map((book) => (
         <Books key={`${book.id} ${book.title}`} {...book} />
       ))}
-    </VStack>
+    </Grid>
   );
 }

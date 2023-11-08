@@ -18,12 +18,16 @@ import {
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { deleteBook, getBookDetailById } from "../modules/fetch";
+import { useDropzone } from "react-dropzone";
+import FileSaver from "file-saver";
 
 export default function BookDetails() {
   const [book, setBook] = useState(null);
   const [isLoading, setLoading] = useState(true);
   const { id } = useParams();
   const navigate = useNavigate();
+
+  console.log(book);
 
   useEffect(() => {
     const fetchBook = async () => {
@@ -45,6 +49,11 @@ export default function BookDetails() {
     } catch (e) {
       console.log(e);
     }
+  };
+
+  const handleSaveImage = () => {
+    const imageBlob = new Blob([book.image], { type: "image/jpeg" });
+    saveAs(imageBlob, `${book.title}.jpg`);
   };
 
   return (
@@ -75,7 +84,7 @@ export default function BookDetails() {
           </Box>
         </Flex>
       )}
-      {localStorage.getItem('token') && (
+      {localStorage.getItem("token") && (
         <HStack>
           <Popover>
             <PopoverTrigger>
@@ -96,6 +105,9 @@ export default function BookDetails() {
           <Link to={`/editbook/${id}`}>
             <Button>Edit</Button>
           </Link>
+          <Button onClick={handleSaveImage} colorScheme="blue">
+            Download
+          </Button>
         </HStack>
       )}
     </Box>
